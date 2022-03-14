@@ -14,10 +14,9 @@ import Record from './components/Record.vue';
 import Register from './components/Register.vue';
 import 'materialize-css/dist/js/materialize.min.js';
 
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 
 const routes = [
   { path: '/login', component: Login, meta: { layout: 'empty' } },
@@ -35,7 +34,8 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-const firebaseConfig = {
+
+firebase.initializeApp({
   apiKey: 'AIzaSyDVrUGv15k9zYRE85gL7OG_uuFttYv9orw',
   authDomain: 'crm-99d51.firebaseapp.com',
   projectId: 'crm-99d51',
@@ -43,12 +43,11 @@ const firebaseConfig = {
   messagingSenderId: '491370171836',
   appId: '1:491370171836:web:71c28b6e7484cd3269afb9',
   measurementId: 'G-2JMKQE4BGV',
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+  databaseURL:
+    'https://crm-99d51-default-rtdb.europe-west1.firebasedatabase.app/',
+});
 let newApp;
-onAuthStateChanged(auth, () => {
+firebase.auth().onAuthStateChanged(() => {
   if (!newApp) {
     newApp = createApp(App)
       .use(router)

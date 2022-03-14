@@ -3,16 +3,23 @@ import auth from './auth';
 
 export default createStore({
   state: {
-    counter: 10,
+    // создаем state error, чтобы в дальнейшем передавать через него ошибки
+    error: null,
   },
-  getters: {
-    getCount2(state) {
-      return state.counter * 2;
+
+  mutations: {
+    // изменяет state error. Принимает два параметра state и сообщение об ошибке error
+    setError(state, error) {
+      state.error = error;
+    },
+    clearError(state) {
+      state.error = null;
     },
   },
-  mutations: {},
-  actions: {},
-  modules: {
-    auth,
+  getters: {
+    // получаем доступ до ошибки, s=state
+    error: (s) => s.error,
   },
+  actions: {},
+  modules: { auth },
 });
