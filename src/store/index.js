@@ -1,5 +1,7 @@
 import { createStore } from 'vuex';
 import auth from './auth';
+import info from './info';
+import category from './category';
 
 export default createStore({
   state: {
@@ -20,6 +22,14 @@ export default createStore({
     // получаем доступ до ошибки, s=state
     error: (s) => s.error,
   },
-  actions: {},
-  modules: { auth },
+  actions: {
+    async fetchCurrency() {
+      const key = import.meta.env.VITE_APP_FIXER;
+      const res = await fetch(
+        `http://data.fixer.io/api/latest?access_key=${key}&symbols=USD,EUR,RUB`
+      );
+      return await res.json();
+    },
+  },
+  modules: { auth, info, category },
 });

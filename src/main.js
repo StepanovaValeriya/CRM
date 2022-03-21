@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import MessagePlagin from './utils/message.plagin.js';
 import App from './App.vue';
 import store from './store';
+import Loader from './app/Loader.vue';
 import Login from './components/Login.vue';
 import Categories from './components/Categories.vue';
 import DetailRecord from './components/DetailRecord.vue';
@@ -53,6 +54,7 @@ firebase.auth().onAuthStateChanged(() => {
       .use(router)
       .use(MessagePlagin)
       .use(store)
+      .component('Loader', Loader)
       .mount('#app');
   }
 });
