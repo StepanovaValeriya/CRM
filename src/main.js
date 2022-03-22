@@ -1,8 +1,10 @@
 import { createApp, VueElement } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import MessagePlagin from './utils/message.plagin.js';
+import Paginate from 'vuejs-paginate/src/components/Paginate.vue';
 import App from './App.vue';
 import store from './store';
+import tooltipDirective from './directives/tooltip.directive.js';
 import Loader from './app/Loader.vue';
 import Login from './components/Login.vue';
 import Categories from './components/Categories.vue';
@@ -21,19 +23,45 @@ import 'firebase/database';
 
 const routes = [
   { path: '/login', component: Login, meta: { layout: 'empty' } },
-  { path: '/categories', component: Categories, meta: { layout: 'main' } },
-  { path: '/detail-record', component: DetailRecord, meta: { layout: 'main' } },
+  {
+    path: '/categories',
+    component: Categories,
+    meta: { layout: 'main', auth: true },
+  },
+  {
+    path: '/detail-record/:id',
+    component: DetailRecord,
+    meta: { layout: 'main', auth: true },
+  },
   { path: '/history', component: history, meta: { layout: 'main' } },
-  { path: '/', component: Home, meta: { layout: 'main' } },
-  { path: '/planning', component: Planning, meta: { layout: 'main' } },
-  { path: '/profile', component: Profile, meta: { layout: 'main' } },
-  { path: '/record', component: Record, meta: { layout: 'main' } },
+  { path: '/', component: Home, meta: { layout: 'main', auth: true } },
+  {
+    path: '/planning',
+    component: Planning,
+    meta: { layout: 'main', auth: true },
+  },
+  {
+    path: '/profile',
+    component: Profile,
+    meta: { layout: 'main', auth: true },
+  },
+  { path: '/record', component: Record, meta: { layout: 'main', auth: true } },
   { path: '/register', component: Register, meta: { layout: 'empty' } },
 ];
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+});
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser;
+  const requireAuth = to.matched.some((record) => record.meta.auth);
+
+  if (requireAuth && !currentUser) {
+    next('/login?message=login');
+  } else {
+    next();
+  }
 });
 
 firebase.initializeApp({
@@ -55,6 +83,8 @@ firebase.auth().onAuthStateChanged(() => {
       .use(MessagePlagin)
       .use(store)
       .component('Loader', Loader)
+      .component('Paginate', Paginate)
+      .directive('tooltip', tooltipDirective)
       .mount('#app');
   }
 });

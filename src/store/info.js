@@ -14,6 +14,20 @@ export default {
     },
   },
   actions: {
+    // обновление данных польз-я в бд
+    async updateInfo({ dispatch, commit, getters }, toUpdate) {
+      try {
+        // получаем id польз-я
+        const uid = await dispatch('getUid');
+        // получаем все поля в info
+        const updateData = { ...getters.info, ...toUpdate };
+        await firebase.database().ref(`/users/${uid}/info`).update(updateData);
+        commit('setInfo', updateData);
+      } catch (e) {
+        commit('setError', e);
+        throw e;
+      }
+    },
     //   обращаемся к бд и подлучаем поле info у конкретного пользователя
     async fetchInfo({ dispatch, commit }) {
       try {
@@ -24,7 +38,10 @@ export default {
           await firebase.database().ref(`/users/${uid}/info`).once('value')
         ).val();
         commit('setInfo', info);
-      } catch (e) {}
+      } catch (e) {
+        commit('setError', e);
+        throw e;
+      }
     },
   },
   getters: {

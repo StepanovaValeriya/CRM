@@ -13,7 +13,11 @@
       </main>
 
       <div class="fixed-action-btn">
-        <router-link class="btn-floating btn-large blue" to="/record">
+        <router-link
+          class="btn-floating btn-large blue"
+          to="/record"
+          v-tooltip="'Создать новую запись'"
+        >
           <i class="large material-icons">add</i>
         </router-link>
       </div>
@@ -24,6 +28,7 @@
 <script>
 import Navbar from '../app/Navbar.vue';
 import Sidebar from '../app/Sidebar.vue';
+import messages from '../utils/messages';
 export default {
   name: 'main-layout',
 
@@ -45,6 +50,18 @@ export default {
       await this.$store.dispatch('fetchInfo');
     }
     this.loading = false;
+  },
+  omputed: {
+    error() {
+      // получаем доступ до геттеров с ошибками
+      return this.$store.getters.error;
+    },
+  },
+  watch: {
+    // смотрим какой код ошибки пришел из fb, если такой ошибки нет в файле messagees, то выводим Что-то пошло не так
+    error(fbError) {
+      this.$error(messages[fbError.code] || 'Что-то пошло не так');
+    },
   },
   components: { Navbar, Sidebar },
 };
