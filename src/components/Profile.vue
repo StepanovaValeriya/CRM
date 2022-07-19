@@ -19,14 +19,6 @@
           >Введите имя</span
         >
       </div>
-      <div class="switch">
-        <label>
-          English
-          <input v-model="isRuLocale" type="checkbox" />
-          <span class="lever"></span>
-          Русский
-        </label>
-      </div>
 
       <button class="btn waves-effect waves-light" type="submit">
         Обновить
